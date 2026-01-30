@@ -63,13 +63,13 @@ Bun.serve({
                 refresh: "5s",
                 items: [
                     {
-                        title: "Pool Hashrate",
+                        title: "Hashrate",
                         text: formattedHashrate,
                         subtext: unit,
                     },
                     { title: "Gophers", text: totalGophers.toString() },
                     {
-                        title: "Current Height",
+                        title: "Height",
                         text: blockHeight.toString(),
                     },
                     {
@@ -88,9 +88,9 @@ Bun.serve({
                 type: "four-stats",
                 refresh: "5s",
                 items: [
-                    { title: "Pool Hashrate", text: "?" },
+                    { title: "Hashrate", text: "?" },
                     { title: "Gophers", text: "?" },
-                    { title: "Current Height", text: "?" },
+                    { title: "Height", text: "?" },
                     { title: "Best Share", text: "?" },
                 ],
             });
