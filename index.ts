@@ -40,7 +40,7 @@ Bun.serve({
             }
 
             // format best diff
-            let bestDiff = bestDifficulty;
+            let bestDiff = bestDifficulty.toPrecision(3);
             let diffUnit = "Kilo";
             if (bestDifficulty >= 1e12) {
                 bestDiff = `${(bestDifficulty / 1e12).toPrecision(3)}`;
