@@ -40,7 +40,7 @@ Bun.serve({
             }
 
             // format best diff
-            let bestDiff = "";
+            let bestDiff = bestDifficulty;
             let diffUnit = "Kilo";
             if (bestDifficulty >= 1e12) {
                 bestDiff = `${(bestDifficulty / 1e12).toPrecision(3)}`;
@@ -73,7 +73,7 @@ Bun.serve({
                         text: blockHeight.toString(),
                     },
                     {
-                        title: "Best Difficulty",
+                        title: "Best Share",
                         text: bestDiff,
                         subtext: diffUnit,
                     },
@@ -91,7 +91,7 @@ Bun.serve({
                     { title: "Pool Hashrate", text: "?" },
                     { title: "Gophers", text: "?" },
                     { title: "Current Height", text: "?" },
-                    { title: "Best Difficulty", text: "?" },
+                    { title: "Best Share", text: "?" },
                 ],
             });
         }
