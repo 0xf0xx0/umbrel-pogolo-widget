@@ -19,29 +19,41 @@ Bun.serve({
         try {
             // Get current pool stats from /api/v1/info
             const response = await fetch(POGOLO_API_URL);
-            const { totalHashrate, totalGophers, bestDifficulty, blocksFound } =
+            const { totalHashrate, totalGophers, bestDifficulty, blockHeight } =
                 await response.json();
 
             // Format hashrate
-            let rate = totalHashrate;
-            const units = ["MH/s", "GH/s", "TH/s", "PH/s", "EH/s"];
-            let unitIndex = 0;
-            while (rate >= 1000 && unitIndex < units.length - 1) {
-                rate /= 1000;
-                unitIndex++;
+            let formattedHashrate = "";
+            let unit = "";
+            if (totalHashrate > 1e9) {
+                formattedHashrate = `${(totalHashrate / 1e9).toPrecision(3)}`;
+                unit = "Ph/s";
+            } else if (totalHashrate > 1e6) {
+                formattedHashrate = `${(totalHashrate / 1e6).toPrecision(3)}`;
+                unit = "Th/s";
+            } else if (totalHashrate > 1000) {
+                formattedHashrate = `${(totalHashrate / 1000).toPrecision(3)}`;
+                unit = "Gh/s";
+            } else {
+                formattedHashrate = `${totalHashrate.toPrecision(3)}`;
+                unit = "Mh/s";
             }
-            const unit = units[unitIndex];
 
             // format best diff
             let bestDiff = "";
+            let diffUnit = "Kilo";
             if (bestDifficulty >= 1e12) {
-                bestDiff = `${(bestDifficulty / 1e12).toPrecision(5)}T`
+                bestDiff = `${(bestDifficulty / 1e12).toPrecision(3)}`;
+                diffUnit = "Peta";
             } else if (bestDifficulty >= 1e9) {
-                bestDiff = `${(bestDifficulty / 1e9).toPrecision(5)}G`
+                bestDiff = `${(bestDifficulty / 1e9).toPrecision(3)}`;
+                diffUnit = "Tera";
             } else if (bestDifficulty >= 1e6) {
-                bestDiff = `${(bestDifficulty / 1e6).toPrecision(5)}M`
+                bestDiff = `${(bestDifficulty / 1e6).toPrecision(3)}`;
+                diffUnit = "Giga";
             } else if (bestDifficulty >= 1000) {
-                bestDiff = `${(bestDifficulty / 1000).toPrecision(5)}k`
+                bestDiff = `${(bestDifficulty / 1000).toPrecision(3)}`;
+                diffUnit = "Mega";
             }
 
             // Return widget data
@@ -52,15 +64,19 @@ Bun.serve({
                 items: [
                     {
                         title: "Pool Hashrate",
-                        text: rate.toFixed(2),
+                        text: formattedHashrate,
                         subtext: unit,
                     },
                     { title: "Gophers", text: totalGophers.toString() },
                     {
-                        title: "Blocks Found",
-                        text: blocksFound.length.toString(),
+                        title: "Current Height",
+                        text: blockHeight.toString(),
                     },
-                    { title: "Best Difficulty", text: bestDiff },
+                    {
+                        title: "Best Difficulty",
+                        text: bestDiff,
+                        subtext: diffUnit,
+                    },
                 ],
             });
         } catch (error) {
@@ -74,7 +90,7 @@ Bun.serve({
                 items: [
                     { title: "Pool Hashrate", text: "?" },
                     { title: "Gophers", text: "?" },
-                    { title: "Blocks Found", text: "?" },
+                    { title: "Current Height", text: "?" },
                     { title: "Best Difficulty", text: "?" },
                 ],
             });
