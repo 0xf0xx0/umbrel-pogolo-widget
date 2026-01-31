@@ -2,6 +2,8 @@
 
 Forked from https://github.com/getumbrel/umbrel-public-pool-widget
 
+![widget](./showoff.png)
+
 This is a server application that fetches data from a specified pogolo instance's API and serves it in a formatted JSON response that's expected by umbrelOS 1.0+ to display a widget. 
 
 The server is built using the bun JavaScript runtime and toolkit, and is containerized as a distroless Docker image for umbrelOS.
