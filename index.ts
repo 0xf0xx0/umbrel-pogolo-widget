@@ -16,6 +16,12 @@ Bun.serve({
             );
         }
 
+        const locale =
+            request.headers.get("Accept-Language")?.split(",")[0].trim() ||
+            "en";
+        const fmt = new Intl.NumberFormat(locale, {
+            maximumSignificantDigits: 3,
+        });
         try {
             // Get current pool stats from /api/v1/info
             const response = await fetch(POGOLO_API_URL);
@@ -26,34 +32,38 @@ Bun.serve({
             let formattedHashrate = "";
             let unit = "";
             if (totalHashrate > 1e9) {
-                formattedHashrate = `${(totalHashrate / 1e9).toPrecision(3)}`;
+                formattedHashrate = `${fmt.format(totalHashrate / 1e9)}`;
                 unit = "Ph/s";
             } else if (totalHashrate > 1e6) {
-                formattedHashrate = `${(totalHashrate / 1e6).toPrecision(3)}`;
+                formattedHashrate = `${fmt.format(totalHashrate / 1e6)}`;
                 unit = "Th/s";
             } else if (totalHashrate > 1000) {
-                formattedHashrate = `${(totalHashrate / 1000).toPrecision(3)}`;
+                formattedHashrate = `${fmt.format(totalHashrate / 1000)}`;
                 unit = "Gh/s";
             } else {
-                formattedHashrate = `${totalHashrate.toPrecision(3)}`;
+                formattedHashrate = `${fmt.format(totalHashrate)}`;
                 unit = "Mh/s";
             }
 
             // format best diff
-            let bestDiff = bestDifficulty.toPrecision(3);
-            let diffUnit = "Kilo";
-            if (bestDifficulty >= 1e12) {
-                bestDiff = `${(bestDifficulty / 1e12).toPrecision(3)}`;
+            let formattedBestDiff = "";
+            let diffUnit = "";
+            if (bestDifficulty >= 1e15) {
                 diffUnit = "Peta";
-            } else if (bestDifficulty >= 1e9) {
-                bestDiff = `${(bestDifficulty / 1e9).toPrecision(3)}`;
+            }  else if (bestDifficulty >= 1e12) {
+                formattedBestDiff = `${fmt.format(bestDifficulty / 1e12)}`;
                 diffUnit = "Tera";
-            } else if (bestDifficulty >= 1e6) {
-                bestDiff = `${(bestDifficulty / 1e6).toPrecision(3)}`;
+            } else if (bestDifficulty >= 1e9) {
+                formattedBestDiff = `${fmt.format(bestDifficulty / 1e9)}`;
                 diffUnit = "Giga";
-            } else if (bestDifficulty >= 1000) {
-                bestDiff = `${(bestDifficulty / 1000).toPrecision(3)}`;
+            } else if (bestDifficulty >= 1e6) {
+                formattedBestDiff = `${fmt.format(bestDifficulty / 1e6)}`;
                 diffUnit = "Mega";
+            } else if (bestDifficulty >= 1000) {
+                formattedBestDiff = `${fmt.format(bestDifficulty / 1000)}`;
+                diffUnit = "Kilo";
+            } else {
+                formattedBestDiff = `${fmt.format(bestDifficulty)}`;
             }
 
             // Return widget data
@@ -67,14 +77,14 @@ Bun.serve({
                         text: formattedHashrate,
                         subtext: unit,
                     },
-                    { title: "Gophers", text: totalGophers.toString() },
+                    { title: "Gophers", text: fmt.format(totalGophers) },
                     {
                         title: "Height",
-                        text: blockHeight.toString(),
+                        text: fmt.format(blockHeight),
                     },
                     {
                         title: "Best Share",
-                        text: bestDiff,
+                        text: formattedBestDiff,
                         subtext: diffUnit,
                     },
                 ],
