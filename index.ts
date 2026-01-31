@@ -19,6 +19,8 @@ Bun.serve({
         const locale =
             request.headers.get("Accept-Language")?.split(",")[0].trim() ||
             "en";
+        const heightfmt = new Intl.NumberFormat(locale);
+
         const fmt = new Intl.NumberFormat(locale, {
             maximumSignificantDigits: 3,
         });
@@ -80,7 +82,7 @@ Bun.serve({
                     { title: "Gophers", text: fmt.format(totalGophers) },
                     {
                         title: "Height",
-                        text: fmt.format(blockHeight),
+                        text: heightfmt.format(blockHeight),
                     },
                     {
                         title: "Best Share",
